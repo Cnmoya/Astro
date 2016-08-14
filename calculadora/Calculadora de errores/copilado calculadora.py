@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt4 import QtCore, QtGui
+import sys
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -399,4 +400,14 @@ class Ui_MainWindow(object):
         self.masmenos.setText(_translate("MainWindow", "+/-", None))
         self.borrar.setText(_translate("MainWindow", "<-", None))
         self.borrar.setShortcut(_translate("MainWindow", "Backspace", None))
+
+
+if __name__ == '__main__':
+    app = QtGui.QApplication(sys.argv)
+    window = QtGui.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(window)
+
+    window.show()
+    sys.exit(app.exec_())
 
