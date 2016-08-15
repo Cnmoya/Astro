@@ -8,6 +8,7 @@
 
 from PyQt4 import QtCore, QtGui
 import sys
+import operaciones_de_errores as oper
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -23,12 +24,12 @@ except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(560, 552)
-        MainWindow.setStyleSheet(_fromUtf8("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(177, 177, 177, 255), stop:1 rgba(255, 255, 255, 255));"))
-        self.centralwidget = QtGui.QWidget(MainWindow)
+class Ui_MainWindow(QtGui.QMainWindow):
+    def setupUi(self):
+        self.setObjectName(_fromUtf8("MainWindow"))
+        self.resize(560, 552)
+        self.setStyleSheet(_fromUtf8("background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:1, stop:0 rgba(177, 177, 177, 255), stop:1 rgba(255, 255, 255, 255));"))
+        self.centralwidget = QtGui.QWidget(self)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
         self.gridLayout = QtGui.QGridLayout(self.centralwidget)
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
@@ -352,14 +353,14 @@ class Ui_MainWindow(object):
         self.borrar.setStyleSheet(_fromUtf8("background-color: rgba(255, 255, 255, 61);"))
         self.borrar.setObjectName(_fromUtf8("borrar"))
         self.gridLayout.addWidget(self.borrar, 3, 4, 1, 2)
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtGui.QMenuBar(MainWindow)
+        self.setCentralWidget(self.centralwidget)
+        self.menubar = QtGui.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 560, 22))
         self.menubar.setObjectName(_fromUtf8("menubar"))
-        MainWindow.setMenuBar(self.menubar)
+        self.setMenuBar(self.menubar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        self.retranslateUi(self)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
@@ -395,19 +396,198 @@ class Ui_MainWindow(object):
         self.boton3.setText(_translate("MainWindow", "3", None))
         self.boton3.setShortcut(_translate("MainWindow", "3", None))
         self.coma.setText(_translate("MainWindow", ",", None))
+        self.coma.setShortcut(",")
         self.botton0.setText(_translate("MainWindow", "0", None))
         self.botton0.setShortcut(_translate("MainWindow", "0", None))
         self.masmenos.setText(_translate("MainWindow", "+/-", None))
         self.borrar.setText(_translate("MainWindow", "<-", None))
         self.borrar.setShortcut(_translate("MainWindow", "Backspace", None))
+        self.elevado.setShortcut("")
+        self.boton1.clicked.connect(self.teclado_signal)
+        self.boton2.clicked.connect(self.teclado_signal)
+        self.boton3.clicked.connect(self.teclado_signal)
+        self.botton4.clicked.connect(self.teclado_signal)
+        self.boton5.clicked.connect(self.teclado_signal)
+        self.boton6.clicked.connect(self.teclado_signal)
+        self.boton7.clicked.connect(self.teclado_signal)
+        self.boton8.clicked.connect(self.teclado_signal)
+        self.boton9.clicked.connect(self.teclado_signal)
+        self.botton0.clicked.connect(self.teclado_signal)
+        self.error_botton.clicked.connect(self.error_signal)
+        self.coma.clicked.connect(self.coma_siganl)
+        self.borrar.clicked.connect(self.borrar_siganl)
+        self.mas.clicked.connect(self.mas_signal)
+        self.menos.clicked.connect(self.menos_signal)
+        self.multiplicacion.clicked.connect(self.multy_signal)
+        self.elevado.clicked.connect(self.elev_signal)
+        self.division.clicked.connect(self.div_signal)
+        self.masmenos.clicked.connect(self.masmenos_signal)
+        self.igual.clicked.connect(self.igual_signal)
+        self.datos_anterior = 0
+        self.error_anterior = 0
+        self.display = True
+        self.operacion = None
+
+
+
+    def teclado_signal(self):
+        sender = self.sender()
+        if self.display:
+            self.datos.setText(self.datos.text()+sender.text())
+        else:
+            self.error.setText(self.error.text()+sender.text())
+
+
+    def error_signal(self):
+        self.display = not self.display
+
+
+    def coma_siganl(self):
+        sender = self.sender()
+        if self.display :
+            if self.datos.text().find(",")==-1:
+                self.datos.setText(self.datos.text() + sender.text())
+        elif self.error.text().find(",") ==-1:
+            self.error.setText(self.error.text() + sender.text())
+
+
+    def borrar_siganl(self):
+        modifiers = QtGui.QApplication.keyboardModifiers()
+        if self.display :
+            self.datos.setText(self.datos.text()[:-1])
+        else:
+            self.error.setText(self.error.text()[:-1])
+        if modifiers == QtCore.Qt.AltModifier:
+            self.datos.setText("")
+            self.error.setText("")
+
+
+    def mas_signal(self):
+        try:
+            self.datos_anterior = float(self.datos.text().replace(",","."))
+        except ValueError:
+            self.datos_anterior = 0
+        try:
+            self.error_anterior = float(self.error.text().replace(",", "."))
+        except ValueError:
+            self.error_anterior = 0
+        self.operacion = "mas"
+        self.igual_signal()
+
+
+    def menos_signal(self):
+        try:
+            self.datos_anterior = float(self.datos.text().replace(",","."))
+        except ValueError:
+            self.datos_anterior = 0
+        try:
+            self.error_anterior = float(self.error.text().replace(",", "."))
+        except ValueError:
+            self.error_anterior = 0
+        self.operacion = "menos"
+        self.igual_signal()
+
+
+    def multy_signal(self):
+        try:
+            self.datos_anterior = float(self.datos.text().replace(",","."))
+        except ValueError:
+            self.datos_anterior = 0
+        try:
+            self.error_anterior = float(self.error.text().replace(",", "."))
+        except ValueError:
+            self.error_anterior = 0
+        self.operacion = "multy"
+        self.igual_signal()
+
+
+    def div_signal(self):
+        try:
+            self.datos_anterior = float(self.datos.text().replace(",", "."))
+        except ValueError:
+            self.datos_anterior = 0
+        try:
+            self.error_anterior = float(self.error.text().replace(",", "."))
+        except ValueError:
+            self.error_anterior = 0
+        self.operacion = "div"
+        self.igual_signal()
+
+
+    def elev_signal(self):
+        try:
+            self.datos_anterior = float(self.datos.text().replace(",","."))
+        except ValueError:
+            self.datos_anterior = 0
+        try:
+            self.error_anterior = float(self.error.text().replace(",", "."))
+        except ValueError:
+            self.error_anterior = 0
+        self.operacion = "elev"
+        self.igual_signal()
+
+
+    def masmenos_signal(self):
+        if self.display:
+            if self.datos.text().find("-") == -1:
+                self.datos.setText("-" + self.datos.text())
+            else:
+                self.datos.setText(self.datos.text()[1:])
+        else :
+            if self.error.text().find("-") == -1:
+                self.error.setText("-" + self.error.text())
+            else:
+                self.error.setText(self.error.text()[1:])
+
+
+    def igual_signal(self):
+        try:
+            datos_temp = float(self.datos.text().replace(",","."))
+        except ValueError:
+            datos_temp = 0
+        try:
+            error_temp = float(self.error.text().replace(",", "."))
+        except ValueError:
+            error_temp = 0
+        if self.operacion == "mas":
+            temp = oper.sumar_con_error(self.datos_anterior,self.error_anterior,
+                                                    datos_temp,error_temp)
+            self.datos.setText(str(temp[0]))
+            self.error.setText(str(temp[1]))
+        elif self.operacion == "menos":
+            temp = oper.sumar_con_error(self.datos_anterior, self.error_anterior,
+                                                           - datos_temp, error_temp)
+            self.datos.setText(str(temp[0]))
+            self.error.setText(str(temp[1]))
+        elif self.operacion == "multy":
+            temp = oper.multiplicacion_con_error(self.datos_anterior, self.error_anterior,
+                                     datos_temp, error_temp)
+            self.datos.setText(str(temp[0]))
+            self.error.setText(str(temp[1]))
+        elif self.operacion == "div":
+            try:
+                temp = oper.division_con_error(self.datos_anterior, self.error_anterior,
+                                                 datos_temp, error_temp)
+            except ValueError:
+                temp = ("ERROR","ERROR")
+            self.datos.setText(str(temp[0]))
+            self.error.setText(str(temp[1]))
+        elif self.operacion == "elev":
+            temp = oper.elevacion_exacta(self.datos_anterior, self.error_anterior,
+                                                 datos_temp)
+            self.datos.setText(str(temp[0]))
+            self.error.setText(str(temp[1]))
+        else:
+            self.datos.setText("")
+            self.error.setText("")
+
+
 
 
 if __name__ == '__main__':
     app = QtGui.QApplication(sys.argv)
-    window = QtGui.QMainWindow()
     ui = Ui_MainWindow()
-    ui.setupUi(window)
-
-    window.show()
+    ui.setupUi()
+    ui.show()
     sys.exit(app.exec_())
 

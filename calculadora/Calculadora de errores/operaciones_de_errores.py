@@ -36,6 +36,7 @@ def division_con_error(valor_fun_a,error_a,*args):
 
 
 def elevacion_exacta(valor_fun_a,error_a,elevado):
+    #funcion que eleva tomando en cuenta el error
     valor_f_f = pow(valor_fun_a,elevado)
     error_f_f = abs(elevado*error_a/valor_fun_a*valor_f_f)
     return (valor_f_f,error_f_f)
