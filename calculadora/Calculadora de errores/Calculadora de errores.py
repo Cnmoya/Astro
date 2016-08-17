@@ -472,7 +472,9 @@ class Ui_MainWindow(QtGui.QMainWindow):
         except ValueError:
             self.error_anterior = 0
         self.operacion = "mas"
-        self.igual_signal()
+        self.datos.setText("")
+        self.error.setText("")
+
 
 
     def menos_signal(self):
@@ -485,7 +487,9 @@ class Ui_MainWindow(QtGui.QMainWindow):
         except ValueError:
             self.error_anterior = 0
         self.operacion = "menos"
-        self.igual_signal()
+        self.datos.setText("")
+        self.error.setText("")
+
 
 
     def multy_signal(self):
@@ -498,7 +502,8 @@ class Ui_MainWindow(QtGui.QMainWindow):
         except ValueError:
             self.error_anterior = 0
         self.operacion = "multy"
-        self.igual_signal()
+        self.datos.setText("")
+        self.error.setText("")
 
 
     def div_signal(self):
@@ -511,7 +516,8 @@ class Ui_MainWindow(QtGui.QMainWindow):
         except ValueError:
             self.error_anterior = 0
         self.operacion = "div"
-        self.igual_signal()
+        self.datos.setText("")
+        self.error.setText("")
 
 
     def elev_signal(self):
@@ -524,7 +530,8 @@ class Ui_MainWindow(QtGui.QMainWindow):
         except ValueError:
             self.error_anterior = 0
         self.operacion = "elev"
-        self.igual_signal()
+        self.datos.setText("")
+        self.error.setText("")
 
 
     def masmenos_signal(self):
@@ -544,11 +551,11 @@ class Ui_MainWindow(QtGui.QMainWindow):
         try:
             datos_temp = float(self.datos.text().replace(",","."))
         except ValueError:
-            datos_temp = 0
+            datos_temp = self.datos_anterior
         try:
             error_temp = float(self.error.text().replace(",", "."))
         except ValueError:
-            error_temp = 0
+            error_temp = self.error_anterior
         if self.operacion == "mas":
             temp = oper.sumar_con_error(self.datos_anterior,self.error_anterior,
                                                     datos_temp,error_temp)
@@ -577,9 +584,7 @@ class Ui_MainWindow(QtGui.QMainWindow):
                                                  datos_temp)
             self.datos.setText(str(temp[0]))
             self.error.setText(str(temp[1]))
-        else:
-            self.datos.setText("")
-            self.error.setText("")
+        self.operacion = None
 
 
 
